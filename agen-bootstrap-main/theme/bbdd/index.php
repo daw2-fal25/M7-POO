@@ -4,6 +4,8 @@ require_once "config.php";
 $result = $mysqli->query("SELECT * FROM USERS WHERE name LIKE '%a%'");
 
 
+
+
 print_r($result);
 
 $result2 = $result->fetch_all(MYSQLI_ASSOC);

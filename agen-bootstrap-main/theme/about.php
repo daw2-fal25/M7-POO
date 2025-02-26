@@ -1,12 +1,10 @@
+<?php
+require_once "./bbdd/config.php";
+$result = $mysqli->query("SELECT * FROM USERS");
+$result2 = $result->fetch_all(MYSQLI_ASSOC);
+?>
+
 <!DOCTYPE html>
-
-<!--
- // WEBSITE: https://themefisher.com
- // TWITTER: https://twitter.com/themefisher
- // FACEBOOK: https://www.facebook.com/themefisher
- // GITHUB: https://github.com/themefisher/
--->
-
 <html lang="zxx">
 
 <head>
@@ -175,42 +173,20 @@
       </div>
     </div>
     <div class="row no-gutters">
-      <div class="col-lg-3 col-sm-6">
-        <div class="card hover-shadow">
-          <img src="images/team/member-1.jpg" alt="team-member" class="card-img-top">
-          <div class="card-body text-center position-relative zindex-1">
-            <h4><a class="text-dark" href="team-single.php">Sara Adams</a></h4>
-            <i>Designer</i>
+    <?php
+      foreach ($result2 as $r) {
+        echo '
+        <div class="col-lg-3 col-sm-6">
+          <div class="card hover-shadow">
+            <img src="' . $r['avatar'] . '" alt="team-member" class="card-img-top">
+            <div class="card-body text-center">
+              <h4>' . $r['name'] . '</h4>
+              <i>' . $r['job'] . '</i>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6">
-        <div class="card hover-shadow">
-          <img src="images/team/member-2.jpg" alt="team-member" class="card-img-top">
-          <div class="card-body text-center position-relative zindex-1">
-            <h4><a class="text-dark" href="team-single.php">Tom Bills</a></h4>
-            <i>Developer</i>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6">
-        <div class="card hover-shadow">
-          <img src="images/team/member-3.jpg" alt="team-member" class="card-img-top">
-          <div class="card-body text-center position-relative zindex-1">
-            <h4><a class="text-dark" href="team-single.php">Anna Walle</a></h4>
-            <i>Manager</i>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6">
-        <div class="card hover-shadow">
-          <img src="images/team/member-4.jpg" alt="team-member" class="card-img-top">
-          <div class="card-body text-center">
-            <h4>Devid Json</h4>
-            <i>CEO</i>
-          </div>
-        </div>
-      </div>
+        </div>';
+      }
+      ?>
     </div>
   </div>
 </section>
