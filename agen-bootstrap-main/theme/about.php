@@ -172,13 +172,13 @@ $result2 = $result->fetch_all(MYSQLI_ASSOC);
         <div class="section-border"></div>
       </div>
     </div>
-    <div class="row no-gutters">
-    <?php
+    <div class="row">
+      <?php
       foreach ($result2 as $r) {
         echo '
-        <div class="col-lg-3 col-sm-6">
-          <div class="card hover-shadow">
-            <img src="' . $r['avatar'] . '" alt="team-member" class="card-img-top">
+        <div class="col-lg-3 col-sm-6 mb-4">
+          <div class="card hover-shadow" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <img src="' . $r['avatar'] . '" alt="team-member" class="card-img-top" style="height: 350px; object-fit: cover;">
             <div class="card-body text-center">
               <h4>' . $r['name'] . '</h4>
               <i>' . $r['job'] . '</i>

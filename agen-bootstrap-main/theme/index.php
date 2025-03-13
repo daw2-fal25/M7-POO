@@ -240,19 +240,18 @@
 
         <div class="row no-gutters">
           <?php
-          foreach ($result2 as $r) {
-            echo '
-        <div class="col-lg-3 col-sm-6">
-          <div class="card hover-shadow">
-            <img src="' . $r['avatar'] . '" alt="team-member" class="card-img-top">
-            <div class="card-body text-center">
-              <h4>' . $r['name'] . '</h4>
-              <i>' . $r['job'] . '</i>
+          foreach ($proyecto2 as $proyecto) : ?>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card project-card hover-shadow mx-3 my-3 border border-light rounded shadow-lg" style="height: 600px;">
+                <img src="<?= $proyecto['thumbnail'] ?>" alt="project-thumb" class="card-img-top rounded" style="height: 300px; object-fit: cover;">
+                <div class="card-body d-flex flex-column" style="height: 200px;">
+                  <h4 class="card-title text-primary"><a href="project-single.html"><?= $proyecto['title'] ?></a></h4>
+                  <p class="card-text flex-grow-1"><?= $proyecto['description'] ?></p>
+                  <a href="<?= $proyecto['url'] ?>" class="btn btn-outline-primary mt-auto">Ver proyecto</a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>';
-          }
-          ?>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>
@@ -293,30 +292,20 @@
         </div>
 
         <div class="row no-gutters shuffle-wrapper">
-          <!-- <div class="col-lg-4 col-md-6 shuffle-item">
-          <div class="project-item">
-            <img src="images/project/project-1.jpg" alt="project-image" class="img-fluid w-100">
-            <div class="project-hover bg-secondary px-4 py-3">
-              <a href="#" class="text-white h4">Project title</a>
-              <a href="#"><i class="ti-link icon-xs text-white"></i></a>
-            </div>
-          </div>
-        </div> -->
           <?php
           foreach ($proyecto2 as $p) {
             echo '
-              <div class="col-lg-4 col-md-6 shuffle-item">
-                <div class="project-item">
-                  <img src="' . $p['thumbnail '] . '" alt="project-image" class="img-fluid w-100">
-                  <div class="project-hover bg-secondary px-4 py-3">
-                    <a href="#" class="text-white h4">' . $p['title '] . '</a>
-                    <a href="#"><i class="ti-link icon-xs text-white"></i></a>
+                <div class="col-lg-4 col-md-6 shuffle-item">
+                  <div class="project-item">
+                    <img src="' . $p['thumbnail'] . '" alt="project-image" class="img-fluid w-100">
+                    <div class="project-hover bg-secondary px-4 py-3">
+                      <a href="#" class="text-white h4">' . $p['title'] . '</a>
+                      <a href="#"><i class="ti-link icon-xs text-white"></i></a>
+                    </div>
                   </div>
-                </div>
-              ';
-            }
+                </div>';
+          }
           ?>
-
         </div>
       </div>
       </div>
@@ -417,19 +406,20 @@
         </div>
         <div class="row">
           <?php
-          foreach ($noticias2 as $n) {
-            echo '
-        <div class="col-lg-3 col-sm-6">
-          <div class="card hover-shadow">
-            <img src="' . $n['thumbnail '] . '" alt="team-member" class="card-img-top">
-            <div class="card-body text-center">
-              <h4>' . $n['title'] . '</h4>
-              <i>' . $n['description'] . '</i>
+          $ultimas_noticias = array_slice($noticias2, 0, 3);
+          foreach ($ultimas_noticias as $noticia) : ?>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card border-light rounded shadow-lg" style="height: 500px;">
+                <img src="<?= $noticia['thumbnail'] ?>" alt="post-thumb" class="card-img-top rounded-circle mx-auto mt-3" style="width: 150px; height: 150px; object-fit: cover;">
+                <div class="card-body text-center" style="height: 250px;">
+                  <h4 class="card-title text-primary"><?= $noticia['title'] ?></h4>
+                  <p class="text-muted"><?= date("F j, Y", strtotime($noticia['new_date'])) ?></p>
+                  <p class="card-text"><?= $noticia['description'] ?></p>
+                  <a href="blog-single.php?id=<?= $noticia['id'] ?>" class="btn btn-outline-primary mt-auto">Leer más</a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>';
-          }
-          ?>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>

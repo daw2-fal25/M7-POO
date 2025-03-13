@@ -1,8 +1,9 @@
 <?php
-  require_once "./bbdd/config.php";
+require_once "./bbdd/config.php";
 
 $result = $mysqli->query("SELECT * FROM USERS");
 $result2 = $result->fetch_all(MYSQLI_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -98,15 +99,22 @@ $result2 = $result->fetch_all(MYSQLI_ASSOC);
   <!-- /page-title -->
 
   <!-- team -->
-  <section class="section pb-0">
+  <section class="section">
     <div class="container">
-      <div class="row no-gutters">
+      <div class="row">
+        <div class="col-lg-10 mx-auto text-center">
+          <h2>Our Team</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
+          <div class="section-border"></div>
+        </div>
+      </div>
+      <div class="row">
         <?php
         foreach ($result2 as $r) {
           echo '
-        <div class="col-lg-3 col-sm-6">
-          <div class="card hover-shadow">
-            <img src="' . $r['avatar'] . '" alt="team-member" class="card-img-top">
+        <div class="col-lg-3 col-sm-6 mb-4">
+          <div class="card hover-shadow" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <img src="' . $r['avatar'] . '" alt="team-member" class="card-img-top" style="height: 350px; object-fit: cover;">
             <div class="card-body text-center">
               <h4>' . $r['name'] . '</h4>
               <i>' . $r['job'] . '</i>
@@ -119,7 +127,6 @@ $result2 = $result->fetch_all(MYSQLI_ASSOC);
     </div>
   </section>
   <!-- /team -->
-
   <!-- call to action -->
   <section class="section pb-0">
     <div class="container section-sm overlay-secondary-half bg-cover" data-background="images/backgrounds/cta-bg.jpg">
