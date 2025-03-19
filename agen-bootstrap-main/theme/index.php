@@ -1,5 +1,11 @@
-  <?php
-  require_once "./bbdd/config.php";
+<?php
+session_start();
+require_once "./bbdd/config.php";
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
 
   $result = $mysqli->query("SELECT * FROM USERS");
   $noticias = $mysqli->query("SELECT * FROM NEWS");

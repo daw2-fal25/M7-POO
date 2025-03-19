@@ -5,7 +5,6 @@ $username = 'yehor';
 $password = '1407831h';
 
 $mysqli = new mysqli($host, $username, $password, $dbname);
-
 if ($mysqli->connect_error) {
     die("Error de conexión: " . $mysqli->connect_error);
 }
