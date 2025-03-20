@@ -2,22 +2,29 @@
 session_start();
 require_once '../../bbdd/config.php';
 
-//1. verificar que el rol sea administrador
-if ($_SESSION['user_rol'] != 'admin') {
-    echo 'No tiene el rol sea administrador';
+
+if (!isset($_SESSION['user_rol']) || $_SESSION['user_rol'] !== 'admin') {
+    echo 'No tiene el rol de administrador';
     exit();
 }
-//2. agarramos el id
-$id = $_GET['id'];
-//3. Ejecutar la consulta
-$stmt = $mysqli->prepare("DELETE FROM TESTIMONIONS WHERE id = ?");
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    echo 'ID inválido';
+    exit();
+}
+
+$id = (int) $_GET['id'];
+
+$stmt = $mysqli->prepare("DELETE FROM TESTIMONIALS WHERE id = ?");
+if (!$stmt) {
+    die('Error en la preparación de la consulta: ' . $mysqli->error);
+}
+
 $stmt->bind_param("i", $id);
-if($stmt->execute()){
-    header('Location:./admintestimonial.php');
+if ($stmt->execute()) {
+    header('Location: ./admintestimonial.php');
+    exit();
 } else {
-    echo 'Error al eliminar el testimonial';
+    die('Error al ejecutar la consulta: ' . $stmt->error);
 }
 $stmt->close();
-$mysqli->close();
-exit();
 ?>

@@ -1,3 +1,24 @@
+<?php
+session_start();
+require_once "./bbdd/config.php";
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
+  $result = $mysqli->query("SELECT * FROM USERS");
+  $noticias = $mysqli->query("SELECT * FROM NEWS");
+
+  $noticias2 = $noticias->fetch_all(MYSQLI_ASSOC);
+  $result2 = $result->fetch_all(MYSQLI_ASSOC);
+
+  $proyecto = $mysqli->query("SELECT * FROM PROJECTS");
+  $proyecto2 = $proyecto->fetch_all(MYSQLI_ASSOC);
+
+  ?>
+
+
 <!DOCTYPE html>
 
 <!--
@@ -42,49 +63,79 @@
   
 
 <header class="navigation fixed-top">
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="index.php"><img src="images/logo.png" alt="Egen"></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
-      aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <a class="navbar-brand" href="index.php"><img src="images/logo.png" alt="Egen"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+        aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse text-center" id="navigation">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="about.php">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="services.php">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="blog.php">Blog</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="portfolio.php">Portfolio</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="team.php">Team</a>
-            <a class="dropdown-item" href="team-single.php">Team Details</a>
-            <a class="dropdown-item" href="career.php">Career</a>
-            <a class="dropdown-item" href="career-single.php">Career Details</a>
-            <a class="dropdown-item" href="blog-single.php">Blog Details</a>
-            <a class="dropdown-item" href="pricing.php">Pricing</a></a>
-            <a class="dropdown-item" href="faqs.php">FAQ's</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="contact.php">Contact</a>
-        </li>
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.php">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.php">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="services.php">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="blog.php">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="portfolio.php">Portfolio</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Pages</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="team.php">Team</a>
+              <a class="dropdown-item" href="team-single.php">Team Details</a>
+              <a class="dropdown-item" href="career.php">Career</a>
+              <a class="dropdown-item" href="career-single.php">Career Details</a>
+              <a class="dropdown-item" href="blog-single.php">Blog Details</a>
+              <a class="dropdown-item" href="pricing.php">Pricing</a>
+              </a>
+              <a class="dropdown-item" href="faqs.php">FAQ's</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.php">Contact</a>
+          </li>
+        </ul>
+      </div>
+      <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="flex items-center space-x-2">
+          <img width="42px" height="42px" src="<?= $_SESSION['user_avatar'] ?>" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white">
+          <span class="text-white hover:text-gray-300"><?= $_SESSION['user_name'] ?></span>
+          <?php
+          if ($_SESSION['user_rol'] === 'admin') {
+            echo '<a href="./admin/admin.php" class="text-blue-400 hover:text-blue-600">
+<svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2" d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+</svg>
+
+
+</a>
+
+';
+          }
+          ?>
+        </div>
+      <?php endif; ?>
+      <a href="./admin/admin.php"></a>
+      <ul class="flex space-x-4">
+        <?php if (!isset($_SESSION['user_id'])): ?>
+          <li><a href="login.php" class="text-white hover:text-gray-300">Iniciar sesión</a></li>
+          <li><a href="register.php" class="text-white hover:text-gray-300">Registrarse</a></li>
+        <?php else: ?>
+          <li><a href="logout.php" class="text-white hover:text-gray-300">Cerrar sesión</a></li>
+        <?php endif; ?>
       </ul>
-    </div>
-  </nav>
-</header>
+    </nav>
+  </header>
 
 <!-- page-title -->
 <section class="page-title bg-cover" data-background="images/backgrounds/page-title.jpg">

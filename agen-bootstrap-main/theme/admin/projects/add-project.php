@@ -1,22 +1,26 @@
 <?php
-//2. comprobar si el formulario ha sido enviado
+
+require_once '../../bbdd/config.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //3. Recoger los datos del formulario
     $title = $_POST['title'];
     $url = $_POST['url'];
     $description = $_POST['description'];
     $thumbnail = $_POST['thumbnail'];
 
-    //4. Ejecutar la consulta
-    $stmt = $mysqli->prepare("INSERT INTO PROJECTS (tittle, url, thumbnail,descripcion) VALUES (?,?,?,?)");
-    $stmt->bind_param("ssss", $title, $url, $thumbnail, $description);
-    if($stmt->execute()){
-        header('Location:./adminprojects.php');
-
-    } else {
-        die('Error en la ejecucion: '. $stmt->error);
+    $stmt = $mysqli->prepare("INSERT INTO PROJECTS (title, url, thumbnail, description) VALUES (?, ?, ?, ?)");
+    if (!$stmt) {
+        die('Error en la preparación de la consulta: ' . $mysqli->error);
     }
-    $stmt->execute();
-    
+
+    $stmt->bind_param("ssss", $title, $url, $thumbnail, $description);
+    if ($stmt->execute()) {
+        header('Location: ./adminprojects.php');
+        exit();
+    } else {
+        die('Error al ejecutar la consulta: ' . $stmt->error);
+    }
+
+    $stmt->close();
 }
 ?>
