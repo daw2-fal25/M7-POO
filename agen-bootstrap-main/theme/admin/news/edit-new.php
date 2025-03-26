@@ -6,27 +6,51 @@ if ($_SESSION['user_rol'] != 'admin') {
     echo 'No tiene el rol de administrador';
     exit();
 }
-$id = $_GET['id'];
-$noticia = $mysqli->query("SELECT * FROM NEWS WHERE id = $id");
-$noticia = $noticia->fetch_assoc();
+
+// Validar el parámetro 'id'
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if ($id <= 0) {
+    echo 'ID inválido';
+    exit();
+}
+
+// Consulta segura para obtener la noticia
+$stmt = $mysqli->prepare("SELECT * FROM NEWS WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$noticia = $result->fetch_assoc();
+$stmt->close();
+
+if (!$noticia) {
+    echo 'Noticia no encontrada';
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $titulo = $_POST['titulo'];
     $subtitulo = $_POST['subtitulo'];
     $imagen = $_POST['Imagen'];
     $descripcion = $_POST['descripcion'];
-    $stmt = $mysqli->prepare("UPDATE NEWS SET tittle=?, subtittle=?, thumbnail=?, descripcion=? WHERE id=?");
+
+    // Consulta preparada para actualizar la noticia
+    $stmt = $mysqli->prepare("UPDATE NEWS SET title = ?, subtitle = ?, thumbnail = ?, description = ? WHERE id = ?");
+    if (!$stmt) {
+        echo 'Error en la preparación de la consulta: ' . $mysqli->error;
+        exit();
+    }
+
     $stmt->bind_param("ssssi", $titulo, $subtitulo, $imagen, $descripcion, $id);
     if ($stmt->execute()) {
         header('Location: ./adminnews.php');
+        exit();
     } else {
-        echo 'Error al actualizar la noticia';
+        echo 'Error al actualizar la noticia: ' . $stmt->error;
     }
     $stmt->close();
-    $mysqli->close();
-    exit();
 }
 
+$mysqli->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -51,15 +75,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="" method="post">
                 <div class="mb-3">
                     <label for="Titulo" class="form-label">Título</label>
-                    <input type="text" class="form-control" id="Titulo" name="titulo" value="<?php echo htmlspecialchars($noticia['tittle']); ?>" required>
+                    <input type="text" class="form-control" id="Titulo" name="titulo" value="<?php echo htmlspecialchars($noticia['title']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="Subtitulo" class="form-label">Subtítulo</label>
-                    <input type="text" class="form-control" id="Subtitulo" name="subtitulo" value="<?php echo htmlspecialchars($noticia['subtittle']); ?>" required>
+                    <input type="text" class="form-control" id="Subtitulo" name="subtitulo" value="<?php echo htmlspecialchars($noticia['subtitle']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="Descripcion" class="form-label">Descripción</label>
-                    <textarea class="form-control" id="Descripcion" name="descripcion" rows="4" required><?php echo htmlspecialchars($noticia['descripcion']); ?></textarea>
+                    <textarea class="form-control" id="Descripcion" name="descripcion" rows="4" required><?php echo htmlspecialchars($noticia['description']); ?></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="Imagen" class="form-label">URL de la Imagen</label>

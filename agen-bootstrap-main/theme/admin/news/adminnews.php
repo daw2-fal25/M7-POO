@@ -2,14 +2,22 @@
 session_start();
 require_once '../../bbdd/config.php';
 
+// Verificar si el usuario tiene el rol de administrador
 if ($_SESSION['user_rol'] !== 'admin') {
     echo 'No tiene el rol de administrador';
     exit();
 }
 
-require_once './add-new.php';
-$news = $mysqli->query("SELECT * FROM NEWS");
-$news = $news->fetch_all(MYSQLI_ASSOC);
+// Consulta segura para obtener las noticias
+$stmt = $mysqli->prepare("SELECT * FROM NEWS ORDER BY new_data DESC");
+if (!$stmt) {
+    echo 'Error al preparar la consulta: ' . $mysqli->error;
+    exit();
+}
+
+$stmt->execute();
+$news = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,23 +55,29 @@ $news = $news->fetch_all(MYSQLI_ASSOC);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($news as $new): ?>
+                    <?php if (!empty($news)): ?>
+                        <?php foreach ($news as $new): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($new['title']) ?></td>
+                                <td><?= htmlspecialchars($new['subtitle']) ?></td>
+                                <td><?= htmlspecialchars($new['description']) ?></td>
+                                <td>
+                                    <a href="<?= htmlspecialchars($new['thumbnail']) ?>" target="_blank">
+                                        <img src="<?= htmlspecialchars($new['thumbnail']) ?>" alt="Imagen" class="img-thumbnail" style="width: 80px; height: 50px; object-fit: cover;">
+                                    </a>
+                                </td>
+                                <td><?= htmlspecialchars($new['new_data']) ?></td>
+                                <td>
+                                    <a href="./edit-new.php?id=<?= $new['id'] ?>" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <a href="./delete-new.php?id=<?= $new['id'] ?>" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td><?= htmlspecialchars($new['tittle']) ?></td>
-                            <td><?= htmlspecialchars($new['subtittle']) ?></td>
-                            <td><?= htmlspecialchars($new['descripcion']) ?></td>
-                            <td>
-                                <a href="<?= htmlspecialchars($new['thumbnail']) ?>" target="_blank">
-                                    <img src="<?= htmlspecialchars($new['thumbnail']) ?>" alt="Imagen" class="img-thumbnail" style="width: 80px; height: 50px; object-fit: cover;">
-                                </a>
-                            </td>
-                            <td><?= htmlspecialchars($new['data_publicacio']) ?></td>
-                            <td>
-                                <a href="./edit-new.php?id=<?= $new['id'] ?>" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="./delete-new.php?id=<?= $new['id'] ?>" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></a>
-                            </td>
+                            <td colspan="6" class="text-center">No se encontraron noticias.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -78,7 +92,7 @@ $news = $news->fetch_all(MYSQLI_ASSOC);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST">
+                    <form action="./add-new.php" method="POST">
                         <div class="mb-3">
                             <label for="Titulo" class="form-label">Título</label>
                             <input type="text" class="form-control" id="Titulo" name="Titulo" required>
